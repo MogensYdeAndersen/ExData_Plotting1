@@ -1,0 +1,16 @@
+data <- read.csv("./household_power_consumption.txt", header=T, sep=";", na.string="?")
+subdata <- data[data$Date %in% c("1/2/2007","2/2/2007"),]
+datetime <- strptime(paste(subdata$Date, subdata$Time, sep=" "), "%d/%m/%Y %H:%M:%S")
+subdata$Datetime <- as.POSIXct(datetime)
+par(mfrow = c(2,2), mar = c(4,4,2,1), oma = c(0,0,2,0), cex=0.65)
+with(subdata, {
+  plot(subdata$Datetime, subdata$Global_active_power, type="l", xlab="", ylab="Global Active Power")
+  plot(subdata$Datetime, subdata$Voltage, type="l", xlab="datetime", ylab="Voltage")
+  plot(subdata$Datetime, subdata$Sub_metering_1, type="l", xlab="", ylab="Energy sub metering")
+  lines(subdata$Datetime, subdata$Sub_metering_2, type="l", col="red")
+  lines(subdata$Datetime, subdata$Sub_metering_3, type="l", col="blue")
+  legend("topright", col=c("black", "red", "blue"), lty=c(1,1,1),  bty="n", c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3"))
+  plot(subdata$Datetime, subdata$Global_reactive_power, type="l", xlab="datetime", ylab="Global_reactive_power")
+})
+dev.copy(png, file="plot4.png", height=480, width=480)
+dev.off()
